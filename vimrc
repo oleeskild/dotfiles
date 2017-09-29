@@ -16,6 +16,11 @@ Plug 'mattn/emmet-vim'
 Plug 'chiel92/vim-autoformat'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-surround'
+Plug 'Valloric/YouCompleteMe'
+Plug 'leafgarland/typescript-vim'
+Plug 'lervag/vimtex'
+"Plug 'vim-pandoc/vim-pandoc'
+"Plug 'vim-pandoc/vim-pandoc-syntax'
 call plug#end()
 let g:goyo_width = 80
 syntax on
@@ -58,3 +63,5 @@ map <C-s> :w <CR> :!git add "%"; and git commit -m "%" --quiet; and git push --q
 :filetype plugin on
 "Map adding surrounding word with following character
 map <leader>r ysiw
+"y copy to clipboard
+:set cb=unnamed
