@@ -1,94 +1,85 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=/opt/homebrew/bin:$PATH
+source "$(brew --prefix)/etc/profile.d/z.sh"
 
-# Path to your oh-my-zsh installation.
-export ZSH=/Users/oleeskildsteensen/.oh-my-zsh
+# clone antidote if necessary
+if ! [[ -e ${ZDOTDIR:-~}/.antidote ]]; then
+  git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+fi
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="bullet-train"
+# source antidote and load plugins from `${ZDOTDIR:-~}/.zsh_plugins.txt`
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+antidote load
 
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+autoload -Uz promptinit
+promptinit
+prompt adam2 
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+path+=('/Users/oleeskild/code/scripts')
+path+=('/Users/oleeskild/.local/bin')
+path+=('/Users/oleeskild/.local/bin/netcoredbg/bin')
+export PATH
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+#__conda_setup="$('/Users/oleeskild/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+#if [ $? -eq 0 ]; then
+#    eval "$__conda_setup"
+#else
+#    if [ -f "/Users/oleeskild/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+#        . "/Users/oleeskild/opt/anaconda3/etc/profile.d/conda.sh"
+#    else
+#        export PATH="/Users/oleeskild/opt/anaconda3/bin:$PATH"
+#    fi
+#fi
+#unset __conda_setup
+# <<< conda initialize <<<
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+#eval "$(github-copilot-cli alias -- "$0")"
+export PATH=$PATH:/Users/oleeskild/.spicetify
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+# bun completions
+[ -s "/Users/oleeskild/.bun/_bun" ] && source "/Users/oleeskild/.bun/_bun"
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
+alias python='python3'
+export OPENAI_API_KEY='{{OPENAI_API_KEY}}'
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-)
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/oleeskild/.cache/lm-studio/bin"
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+  #eval "$(oh-my-posh init zsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/negligible.omp.json)"
+fi
 
-source $ZSH/oh-my-zsh.sh
+export PATH="/opt/arm-gnu-toolchain/bin:$PATH"
 
-# User configuration
+export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+export GEMINI_API_KEY="{{GEMINI_API_KEY}}"
+export GEMINI_MODEL="gemini-2.5-pro"
+alias breath='zenta now --quick'
+alias breath='zenta now --quick'
+alias reflect='zenta reflect'
+alias breathe='zenta now'
+alias ai="claude --dangerously-skip-permissions"
+#export OPENAI_BASE_URL="http://cuzco:11434/v1"
+#export OPENAI_MODEL="hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL"
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+alias n="nvim"
+alias s="TERM=xterm-256color spotify_player"
