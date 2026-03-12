@@ -1,0 +1,215 @@
+#!/bin/bash
+# ~/.config/sketchybar/sketchybarrc
+# Omarchy-inspired sketchybar config for AeroSpace on macOS
+
+# ─────────────────────────────────────────────
+# Colours (Tokyo Night palette — matches Omarchy's default theme)
+# ─────────────────────────────────────────────
+BAR_BG=0x901a1b26        # semi-transparent for frosted glass
+ITEM_BG=0xff24283a       # slightly lighter item background
+ITEM_BG_ACTIVE=0xff414868
+ACCENT=0xff7aa2f7        # blue
+ACCENT2=0xff9ece6a       # green
+WARNING=0xffe0af68       # yellow/orange
+DANGER=0xfff7768e        # red
+TEXT=0xffc0caf5          # main text
+TEXT_DIM=0xff565f89      # dimmed text
+TRANSPARENT=0x00000000
+ISLAND_BG=0xff1a1b26     # solid background for bracket islands
+
+# ─────────────────────────────────────────────
+# Bar appearance (frosted glass)
+# ─────────────────────────────────────────────
+sketchybar \
+  --bar \
+    height=34 \
+    position=top \
+    padding_left=8 \
+    padding_right=8 \
+    color=$BAR_BG \
+    border_width=0 \
+    shadow=off \
+    blur_radius=30 \
+    notch_width=200
+
+# ─────────────────────────────────────────────
+# Default item appearance
+# ─────────────────────────────────────────────
+sketchybar \
+  --default \
+    icon.font="SF Pro:Semibold:13.0" \
+    icon.color=$TEXT \
+    icon.padding_left=6 \
+    icon.padding_right=4 \
+    label.font="SF Pro:Regular:13.0" \
+    label.color=$TEXT \
+    label.padding_left=2 \
+    label.padding_right=6 \
+    background.corner_radius=6 \
+    background.height=24 \
+    background.drawing=off \
+    update_freq=0
+
+# ─────────────────────────────────────────────
+# LEFT — AeroSpace workspaces
+# ─────────────────────────────────────────────
+
+sketchybar --add event aerospace_workspace_change
+
+SPACE_ITEMS=()
+for sid in $(aerospace list-workspaces --all 2>/dev/null || echo "1 2 3 4 5 6 7 8 9 10"); do
+  sketchybar \
+    --add item "space.$sid" left \
+    --subscribe "space.$sid" aerospace_workspace_change \
+    --set "space.$sid" \
+      icon="$sid" \
+      icon.font="SF Pro:Bold:12.0" \
+      icon.color=$TEXT_DIM \
+      label.drawing=off \
+      background.drawing=off \
+      background.color=$ITEM_BG_ACTIVE \
+      background.corner_radius=6 \
+      background.height=24 \
+      padding_left=2 \
+      padding_right=2 \
+      click_script="aerospace workspace $sid" \
+      script="$HOME/.config/sketchybar/plugins/aerospace.sh $sid"
+  SPACE_ITEMS+=("space.$sid")
+done
+
+# Bracket: workspaces island
+sketchybar --add bracket spaces "${SPACE_ITEMS[@]}" \
+  --set spaces \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.corner_radius=10 \
+    background.height=28 \
+    background.border_width=1 \
+    background.border_color=0xff2a2e3f
+
+# ─────────────────────────────────────────────
+# LEFT — AeroSpace mode indicator
+# ─────────────────────────────────────────────
+
+sketchybar --add event aerospace_mode_change
+
+sketchybar \
+  --add item aerospace_mode left \
+  --subscribe aerospace_mode aerospace_mode_change \
+  --set aerospace_mode \
+    drawing=off \
+    icon="󰘳" \
+    icon.font="Hack Nerd Font:Regular:14.0" \
+    label.font="SF Pro:Bold:12.0" \
+    padding_left=6 \
+    padding_right=4 \
+    script="$HOME/.config/sketchybar/plugins/aerospace_mode.sh"
+
+# ─────────────────────────────────────────────
+# CENTRE — current app name with icon
+# ─────────────────────────────────────────────
+sketchybar \
+  --add item front_app center \
+  --set front_app \
+    icon.drawing=on \
+    icon.font="sketchybar-app-font:Regular:16.0" \
+    icon.color=$ACCENT \
+    icon.padding_right=6 \
+    label.font="SF Pro:Semibold:13.0" \
+    label.color=$TEXT \
+    script="$HOME/.config/sketchybar/plugins/front_app.sh" \
+  --subscribe front_app front_app_switched
+
+# ─────────────────────────────────────────────
+# RIGHT — system info
+# ─────────────────────────────────────────────
+
+# Clock
+sketchybar \
+  --add item clock right \
+  --set clock \
+    icon="󰥔" \
+    icon.font="Hack Nerd Font:Regular:14.0" \
+    icon.color=$ACCENT \
+    label.color=$TEXT \
+    update_freq=10 \
+    script="$HOME/.config/sketchybar/plugins/clock.sh"
+
+# Battery
+sketchybar \
+  --add item battery right \
+  --set battery \
+    icon.color=$ACCENT2 \
+    label.color=$TEXT \
+    update_freq=60 \
+    script="$HOME/.config/sketchybar/plugins/battery.sh" \
+  --subscribe battery power_source_change system_woke
+
+# Bracket: clock + battery island
+sketchybar --add bracket status clock battery \
+  --set status \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.corner_radius=10 \
+    background.height=28 \
+    background.border_width=1 \
+    background.border_color=0xff2a2e3f
+
+# Spacer between islands
+sketchybar --add item island_spacer right \
+  --set island_spacer \
+    icon.drawing=off \
+    label.drawing=off \
+    background.drawing=off \
+    padding_left=3 \
+    padding_right=3 \
+    width=8
+
+# Volume
+sketchybar \
+  --add item volume right \
+  --subscribe volume volume_change \
+  --set volume \
+    icon="󰕾" \
+    icon.font="Hack Nerd Font:Regular:14.0" \
+    icon.color=$ACCENT2 \
+    label.color=$TEXT \
+    script="$HOME/.config/sketchybar/plugins/volume.sh"
+
+# WiFi
+sketchybar \
+  --add item wifi right \
+  --set wifi \
+    icon.font="Hack Nerd Font:Regular:16.0" \
+    icon.color=$ACCENT \
+    label.drawing=off \
+    update_freq=10 \
+    script="$HOME/.config/sketchybar/plugins/wifi.sh" \
+  --subscribe wifi wifi_change
+
+# Keyboard layout
+sketchybar \
+  --add item keyboard right \
+  --set keyboard \
+    icon="󰌌" \
+    icon.font="Hack Nerd Font:Regular:14.0" \
+    icon.color=$WARNING \
+    label.color=$TEXT \
+    label.font="SF Pro:Bold:11.0" \
+    update_freq=3 \
+    script="$HOME/.config/sketchybar/plugins/keyboard.sh"
+
+# Bracket: volume + wifi + keyboard island
+sketchybar --add bracket connectivity volume wifi keyboard \
+  --set connectivity \
+    background.drawing=on \
+    background.color=$ISLAND_BG \
+    background.corner_radius=10 \
+    background.height=28 \
+    background.border_width=1 \
+    background.border_color=0xff2a2e3f
+
+# ─────────────────────────────────────────────
+# Force initial update
+# ─────────────────────────────────────────────
+sketchybar --update
