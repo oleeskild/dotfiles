@@ -1,0 +1,220 @@
+# aerospace.toml — Omarchy-inspired config for macOS
+# Mimics the Hyprland setup from basecamp/omarchy
+# "Super" = Hyper key via Superkey app (Caps Lock → ctrl+alt+cmd+shift)
+
+# ─────────────────────────────────────────────
+# General
+# ─────────────────────────────────────────────
+
+# Start sketchybar alongside AeroSpace
+after-startup-command = ['exec-and-forget sketchybar']
+
+# Notify sketchybar on workspace change
+exec-on-workspace-change = [
+  '/bin/bash', '-c',
+  'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+
+# Tiling layout: tiles mimics Hyprland's dwindle behaviour
+default-root-container-layout = 'tiles'
+
+# 'auto' mirrors Hyprland's default: wide monitor → horizontal splits,
+# tall monitor → vertical splits
+default-root-container-orientation = 'auto'
+
+# Mouse follows focus (Hyprland: mouse_refocus = true by default)
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# Accordion padding (used when layout is toggled to accordion / "group" mode)
+accordion-padding = 30
+
+# Normalisation — keeps nested containers tidy, analogous to Hyprland dwindle
+# force_split = 2 (new windows always split right)
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# ─────────────────────────────────────────────
+# Gaps
+# Hyprland defaults (from omarchy-hyprland-workspace-toggle-gaps):
+#   gaps_in  = 5   (per window edge, so gap between two windows = 10)
+#   gaps_out = 10  (screen edge padding)
+#   border_size = 2 (no direct equivalent in AeroSpace)
+# ─────────────────────────────────────────────
+
+[gaps]
+inner.horizontal = 10   # gaps_in × 2
+inner.vertical   = 10   # gaps_in × 2
+outer.left       = 10   # gaps_out
+outer.right      = 10   # gaps_out
+outer.top        = 46   # extra space for sketchybar
+outer.bottom     = 10   # gaps_out
+
+# ─────────────────────────────────────────────
+# Key bindings  (main mode)
+#
+# "Super" = Hyper key via Superkey app
+#   Caps Lock → ctrl+alt+cmd+shift  (all four modifiers simultaneously)
+#   In AeroSpace this is written as: ctrl-alt-cmd-shift-<key>
+#
+# For bindings that Omarchy uses with Super+Shift, since Shift is already
+# part of Hyper, we drop Shift and just use Hyper+<key>. Where Omarchy
+# uses Super+Alt, we use ctrl-alt-cmd-<key> (Hyper minus Shift).
+#
+# Omarchy → AeroSpace mapping:
+#   Super+Return          → ctrl-alt-cmd-shift-enter  (terminal)
+#   Super+Shift+Return    → ctrl-alt-cmd-enter         (browser)
+#   Super+Q               → ctrl-alt-cmd-shift-q       (close)
+#   Super+T               → ctrl-alt-cmd-shift-t       (toggle float)
+#   Super+F               → ctrl-alt-cmd-shift-f       (fullscreen)
+#   Super+J               → ctrl-alt-cmd-shift-j       (toggle split)
+#   Super+Arrow           → ctrl-alt-cmd-shift-arrow   (focus)
+#   Super+Shift+Arrow     → ctrl-alt-cmd-arrow          (move window)
+#   Super+Alt+Arrow       → ctrl-alt-shift-arrow        (resize)
+#   Super+1…0             → ctrl-alt-cmd-shift-1…0     (workspace)
+#   Super+Shift+1…0       → ctrl-alt-cmd-1…0            (move to workspace)
+#   Super+Tab             → ctrl-alt-cmd-shift-tab      (back-and-forth)
+#   Super+Space           → ctrl-alt-cmd-shift-space    (app launcher)
+# ─────────────────────────────────────────────
+
+[mode.main.binding]
+
+# ── Applications ──────────────────────────────────────────────────────────────
+# Super+Return → open terminal (Ghostty)
+ctrl-alt-cmd-shift-enter = 'exec-and-forget open -a Ghostty'
+
+# Super+Shift+Return → open browser (Zen)
+ctrl-alt-cmd-enter = 'exec-and-forget open -a "Zen Browser"'
+
+# Super+B → Zen Browser
+ctrl-alt-cmd-shift-b = 'exec-and-forget open -a "Zen Browser"'
+
+# Super+Space → app launcher (Raycast; swap for Spotlight if preferred)
+ctrl-alt-cmd-shift-space = 'exec-and-forget open -a "Raycast"'
+
+# Super+S → Spotify
+ctrl-alt-cmd-shift-s = 'exec-and-forget open -a "Spotify"'
+
+# Super+R → JetBrains Rider
+ctrl-alt-cmd-shift-r = 'exec-and-forget open -a "Rider"'
+
+# Super+O → Obsidian
+ctrl-alt-cmd-shift-o = 'exec-and-forget open -a "Obsidian"'
+
+# Super+M → Slack
+ctrl-alt-cmd-shift-m = 'exec-and-forget open -a "Slack"'
+
+# Super+. → Claude
+ctrl-alt-cmd-shift-period = 'exec-and-forget open -a "Claude"'
+
+# ── Window control ─────────────────────────────────────────────────────────────
+# Super+Q → close focused window
+ctrl-alt-cmd-shift-q = 'close'
+
+# Super+F → fullscreen (Hyprland: togglefullscreen)
+ctrl-alt-cmd-shift-f = 'fullscreen'
+
+# Super+T → toggle floating (Hyprland: togglefloating)
+ctrl-alt-cmd-shift-t = 'layout floating tiling'
+
+# Super+J → toggle split orientation (Hyprland: togglesplit / dwindle)
+ctrl-alt-cmd-shift-j = 'layout tiles horizontal vertical'
+
+# ── Focus (Super+Arrow → Hyper+Arrow) ─────────────────────────────────────────
+ctrl-alt-cmd-shift-left  = 'focus left'
+ctrl-alt-cmd-shift-down  = 'focus down'
+ctrl-alt-cmd-shift-up    = 'focus up'
+ctrl-alt-cmd-shift-right = 'focus right'
+
+# ── Move / swap windows (Super+Shift+Arrow → Hyper minus Shift + Arrow) ───────
+ctrl-alt-cmd-left  = 'move left'
+ctrl-alt-cmd-down  = 'move down'
+ctrl-alt-cmd-up    = 'move up'
+ctrl-alt-cmd-right = 'move right'
+
+# ── Resize windows (Super+Alt+Arrow → Hyper minus Cmd + Arrow) ────────────────
+ctrl-alt-shift-left  = 'resize width -50'
+ctrl-alt-shift-right = 'resize width +50'
+ctrl-alt-shift-up    = 'resize height -50'
+ctrl-alt-shift-down  = 'resize height +50'
+
+# ── Workspaces (Super+1…0 → Hyper+1…0) ───────────────────────────────────────
+ctrl-alt-cmd-shift-1 = 'workspace 1'
+ctrl-alt-cmd-shift-2 = 'workspace 2'
+ctrl-alt-cmd-shift-3 = 'workspace 3'
+ctrl-alt-cmd-shift-4 = 'workspace 4'
+ctrl-alt-cmd-shift-5 = 'workspace 5'
+ctrl-alt-cmd-shift-6 = 'workspace 6'
+ctrl-alt-cmd-shift-7 = 'workspace 7'
+ctrl-alt-cmd-shift-8 = 'workspace 8'
+ctrl-alt-cmd-shift-9 = 'workspace 9'
+ctrl-alt-cmd-shift-0 = 'workspace 10'
+
+# ── Move window to workspace (Super+Shift+1…0 → Hyper minus Shift + 1…0) ──────
+ctrl-alt-cmd-1 = ['move-node-to-workspace 1',  'workspace 1']
+ctrl-alt-cmd-2 = ['move-node-to-workspace 2',  'workspace 2']
+ctrl-alt-cmd-3 = ['move-node-to-workspace 3',  'workspace 3']
+ctrl-alt-cmd-4 = ['move-node-to-workspace 4',  'workspace 4']
+ctrl-alt-cmd-5 = ['move-node-to-workspace 5',  'workspace 5']
+ctrl-alt-cmd-6 = ['move-node-to-workspace 6',  'workspace 6']
+ctrl-alt-cmd-7 = ['move-node-to-workspace 7',  'workspace 7']
+ctrl-alt-cmd-8 = ['move-node-to-workspace 8',  'workspace 8']
+ctrl-alt-cmd-9 = ['move-node-to-workspace 9',  'workspace 9']
+ctrl-alt-cmd-0 = ['move-node-to-workspace 10', 'workspace 10']
+
+# ── Workspace cycling ─────────────────────────────────────────────────────────
+# Super+Tab → back-and-forth (last used workspace)
+ctrl-alt-cmd-shift-tab = 'workspace-back-and-forth'
+
+# Super+Alt+Left/Right → prev/next workspace
+ctrl-alt-shift-h = 'workspace prev'
+ctrl-alt-shift-l = 'workspace next'
+
+# ── Reload config ─────────────────────────────────────────────────────────────
+# Hyprland: Super+Escape → Relaunch
+ctrl-alt-cmd-shift-semicolon = ['reload-config', 'exec-and-forget sketchybar --reload']
+
+# ── Service mode ─────────────────────────────────────────────────────────────
+ctrl-alt-cmd-shift-x = [
+  'mode service',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=service'
+]
+
+[mode.service.binding]
+esc = [
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main'
+]
+r = [
+  'flatten-workspace-tree',
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main'
+]
+f = [
+  'layout floating tiling',
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main'
+]
+backspace = [
+  'close-all-windows-but-current',
+  'mode main',
+  'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main'
+]
+
+# ─────────────────────────────────────────────
+# Workspaces
+# 10 workspaces to match Hyprland's 1-10 setup
+# ─────────────────────────────────────────────
+
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 1'
+
+# [[on-window-detected]]
+# if.app-id = 'app.zen-browser.desktop'
+# run = 'move-node-to-workspace 2'
+
+# Add more window-to-workspace rules here as needed, e.g.:
+# [[on-window-detected]]
+# if.app-id = 'com.spotify.client'
+# run = 'move-node-to-workspace 9'

@@ -72,12 +72,7 @@ return {
       end,
     }
 
-    vim.api.nvim_create_autocmd("VimEnter", {
-      callback = function()
-        if dotnet.is_dotnet_project() then
-          add_dotnet_mappings()
-        end
-      end,
-    })
+    add_dotnet_mappings()
+
   end,
 }
